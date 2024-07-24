@@ -1,53 +1,68 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+// Filename: index.js
+// Combined code from all files
 
-const App = () => {
-  const fullText = 'Hi, this is Apply.\nCreating mobile apps is now as simple as typing text.\nJust input your idea and press APPLY, and our platform does the rest...';
-  const [displayedText, setDisplayedText] = useState('');
-  const [index, setIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+import React from 'react';
+import { SafeAreaView, StyleSheet, Text, FlatList, Image, View } from 'react-native';
 
-  useEffect(() => {
-    if (isPaused) return;
+const images = [
+    { id: '1', width: 200, height: 200 },
+    { id: '2', width: 200, height: 200 },
+    { id: '3', width: 200, height: 200 },
+    { id: '4', width: 200, height: 200 },
+    { id: '5', width: 200, height: 200 },
+];
 
-    const interval = setInterval(() => {
-      setDisplayedText((prev) => prev + fullText[index]);
-      setIndex((prev) => {
-        if (prev === fullText.length - 1) {
-          setIsPaused(true);
-          setTimeout(() => {
-            setDisplayedText('');
-            setIndex(0);
-            setIsPaused(false);
-          }, 2000);
-          return 0;
-        }
-        return prev + 1;
-      });
-    }, 100);
+const ImageList = () => {
+    const renderItem = ({ item }) => (
+        <View style={styles.imageContainer}>
+            <Image
+                source={{ uri: `https://picsum.photos/${item.width}/${item.height}?random=${item.id}` }}
+                style={styles.image}
+            />
+        </View>
+    );
 
-    return () => clearInterval(interval);
-  }, [index, isPaused]);
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>{displayedText}</Text>
-    </View>
-  );
+    return (
+        <FlatList
+            data={images}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.list}
+        />
+    );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'black',
-    padding: 20,
-  },
-  text: {
-    color: 'white',
-    fontSize: 24,
-    fontFamily: 'monospace',
-  },
-});
+export default function App() {
+    return (
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>Picsum Photos</Text>
+            <ImageList />
+        </SafeAreaView>
+    );
+}
 
-export default App;
+const styles = StyleSheet.create({
+    container: {
+        padding: 20,
+        backgroundColor: '#FFFFFF',
+        flex: 1,
+        marginTop: 20, // Ensures content does not overlap with the status bar
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    list: {
+        alignItems: 'center',
+    },
+    imageContainer: {
+        margin: 10,
+    },
+    image: {
+        width: 200,
+        height: 200,
+        borderRadius: 10,
+    },
+});
